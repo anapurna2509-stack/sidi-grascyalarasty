@@ -425,49 +425,58 @@
     </button>
 
     <script>
-        // 1. FUNGSI BUKA UNDANGAN & PLAY MUSIK
-        const cover = document.getElementById('cover');
-        const mainContent = document.getElementById('main-content');
-        const musicBtn = document.getElementById('music-btn');
-        const audio = document.getElementById('bg-music');
+       // 1. PENGATURAN AWAL & URL
+		const scriptURL = 'https://script.google.com/macros/s/AKfycbwStzrs3vZmwJeyFwa_7Yxr8J8eNQNTdC24jCfgW4x_AcZyQz__8lZ_hW7QWq1-bZGZwg/exec'; 
+		const form = document.forms['submit-to-google-sheet'];
+		const btnKirim = document.getElementById('btn-kirim');
+		const cover = document.getElementById('cover');
+		const mainContent = document.getElementById('main-content');
+		const musicBtn = document.getElementById('music-btn');
+		const audio = document.getElementById('bg-music');
 
-        function openInvitation() {
-            cover.style.opacity = '0';
-            setTimeout(() => {
-                cover.style.visibility = 'hidden';
-                cover.style.display = 'none';
-                mainContent.style.display = 'block';
-                setTimeout(() => mainContent.style.opacity = '1', 50);
-                
-                // Mulai musik dan tampilkan tombol kontrol
-                audio.play();
-                musicBtn.style.display = 'block';
-            }, 1000);
-        }
+		let totalHadir = 0;
+		let totalTidak = 0;
 
-        // 2. KONTROL MUSIK (MUTE/UNMUTE)
-        function toggleMusic() {
-            if (audio.paused) {
-                audio.play();
-                musicBtn.innerHTML = '<i class="fa-solid fa-music"></i>';
-            } else {
-                audio.pause();
-                musicBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
-            }
-        }
+        // 2. FUNGSI BUKA UNDANGAN
+		function openInvitation() {
+    		cover.style.opacity = '0';
+    		setTimeout(() => {
+      		  cover.style.visibility = 'hidden';
+       		  cover.style.display = 'none';
+      		  mainContent.style.display = 'block';
+       		  setTimeout(() => mainContent.style.opacity = '1', 50);
+        
+       		  audio.play();
+       		  musicBtn.style.display = 'block';
+        
+       		 // Ambil data dari Google Sheets saat undangan dibuka
+        	 loadMessages();
+    	}, 1000);
+}
 
-        // 3. ANIMASI SCROLL (FADE IN)
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
+        	// 3. KONTROL MUSIK
+		function toggleMusic() {
+   			 if (audio.paused) {
+        	 audio.play();
+        	 musicBtn.innerHTML = '<i class="fa-solid fa-music"></i>';
+   			 } else {
+        	 audio.pause();
+        	 musicBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+   		 }
+}	
 
-        document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+		// 4. ANIMASI SCROLL (FADE IN)
+		const observer = new IntersectionObserver((entries) => {
+		    entries.forEach(entry => {
+		        if (entry.isIntersecting) {
+		            entry.target.classList.add('visible');
+		        }
+		    });
+		}, { threshold: 0.1 });
 
-        // 4. COUNTDOWN TIMER (Target: 29 Maret 2026 08:00:00)
+		document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+
+        // 5. COUNTDOWN TIMER (Target: 29 Maret 2026 08:00:00)
         const targetDate = new Date("March 29, 2026 08:00:00").getTime();
         
         const countdownInterval = setInterval(() => {
@@ -494,71 +503,63 @@
             document.getElementById("detik").innerText = seconds.toString().padStart(2, '0');
         }, 1000);
 
-        // 5. INTEGRASI FORM GOOGLE SHEETS & BUKU TAMU LOKAL
-        // PENTING: Ganti URL di bawah dengan URL Web App dari Google Apps Script Anda
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbx9zPuYbKDNh9mZK8nztWKZur9P66rVtsj84dBzgEQdsl78wqhJsrzmeCkewUat8G2P_A/exec'; 
-        const form = document.forms['submit-to-google-sheet'];
-        const btnKirim = document.getElementById('btn-kirim');
-        
-        // Variabel untuk statistik lokal (simulasi)
-        let totalHadir = 0;
-        let totalTidak = 0;
+        // 6. FUNGSI AMBIL DATA (Agar tidak hilang saat refresh)
+function loadMessages() {
+    const container = document.getElementById('messages-container');
+    container.innerHTML = '<p style="text-align:center; opacity:0.5; font-size:0.8rem;">Memuat pesan...</p>';
 
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            btnKirim.innerText = "Mengirim...";
-            btnKirim.disabled = true;
+    fetch(scriptURL)
+        .then(response => response.json())
+        .then(data => {
+            container.innerHTML = ''; 
+            totalHadir = 0;
+            totalTidak = 0;
 
-            // Ambil data form
-            const formData = new FormData(form);
-            const nama = formData.get('Nama');
-            const ucapan = formData.get('Ucapan');
-            const kehadiran = formData.get('Kehadiran');
+            // Memproses data dari yang terbaru (reverse)
+            data.reverse().forEach(item => {
+                const statusColor = item.kehadiran === 'Hadir' ? 'var(--sage-dark)' : 'var(--text-muted)';
+                const messageHTML = `
+                    <div class="message-item visible">
+                        <h4>${item.nama} <span style="background: ${statusColor}; color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; margin-left: 5px;">${item.kehadiran}</span></h4>
+                        <p style="color: var(--text-muted); font-size: 0.95rem;">"${item.ucapan}"</p>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', messageHTML);
+                
+                if(item.kehadiran === 'Hadir') totalHadir++;
+                else totalTidak++;
+            });
 
-            // --- BAGIAN INI MENGIRIM DATA KE GOOGLE SHEETS ---
-            // Jika Anda belum memasukkan scriptURL yang valid, pengiriman akan gagal, 
-            // namun ucapan akan tetap muncul di layar sebagai simulasi.
-            fetch(scriptURL, { method: 'POST', body: formData })
-                .then(response => {
-                    console.log('Success!', response);
-                })
-                .catch(error => console.error('Error!', error.message))
-                .finally(() => {
-                    // Update tampilan Buku Tamu Lokal
-                    tambahkanUcapanKeLayar(nama, ucapan, kehadiran);
-                    updateStatistik(kehadiran);
-
-                    // Reset Form
-                    form.reset();
-                    btnKirim.innerText = "Kirim Ucapan & Konfirmasi";
-                    btnKirim.disabled = false;
-                    alert("Terima kasih! Konfirmasi dan ucapan Anda telah terkirim.");
-                });
+            document.getElementById('count-hadir').innerText = totalHadir;
+            document.getElementById('count-tidak').innerText = totalTidak;
+        })
+        .catch(error => {
+            console.error('Error loading messages!', error);
+            container.innerHTML = '<p style="text-align:center; color:red; font-size:0.8rem;">Gagal memuat pesan.</p>';
         });
+}
 
-        function tambahkanUcapanKeLayar(nama, ucapan, kehadiran) {
-            const container = document.getElementById('messages-container');
-            const statusColor = kehadiran === 'Hadir' ? 'var(--sage-dark)' : 'var(--text-muted)';
-            
-            const messageHTML = `
-                <div class="message-item fade-in visible">
-                    <h4>${nama} <span style="background: ${statusColor}; color: white;">${kehadiran}</span></h4>
-                    <p style="color: var(--text-muted); font-size: 0.95rem;">"${ucapan}"</p>
-                </div>
-            `;
-            // Tambahkan di urutan teratas
-            container.insertAdjacentHTML('afterbegin', messageHTML);
-        }
+            /// 7. FORM SUBMIT (Kirim ke Google Sheets)
+		form.addEventListener('submit', e => {
+		    e.preventDefault();
+		    btnKirim.innerText = "Mengirim...";
+		    btnKirim.disabled = true;
 
-        function updateStatistik(kehadiran) {
-            if(kehadiran === 'Hadir') {
-                totalHadir++;
-                document.getElementById('count-hadir').innerText = totalHadir;
-            } else {
-                totalTidak++;
-                document.getElementById('count-tidak').innerText = totalTidak;
-            }
-        }
+		    fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+		        .then(response => {
+		            alert("Terima kasih! Ucapan Anda telah tersimpan.");
+		            form.reset();
+		            loadMessages(); // Muat ulang pesan agar yang baru muncul
+		        })
+		        .catch(error => {
+		            console.error('Error!', error.message);
+		            alert("Terjadi kesalahan. Pastikan Google Script sudah di-deploy sebagai 'Anyone'.");
+		        })
+		        .finally(() => {
+		            btnKirim.innerText = "Kirim Ucapan & Konfirmasi";
+		            btnKirim.disabled = false;
+		        });
+		});
     </script>
 </body>
 </html>
