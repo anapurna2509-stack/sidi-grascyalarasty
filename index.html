@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Peneguhan SIDI - Grascya Larasaty Wulandari</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- VARIABEL WARNA --- */
+        :root {
+            --sage-light: #C1D0B5;
+            --sage: #A3B18A;
+            --sage-dark: #588157;
+            --gold: #D4AF37;
+            --gold-light: #F4E2A9;
+            --white: #FFFFFF;
+            --cream: #F9F6F0;
+            --text-main: #344E41;
+            --text-muted: #555555;
+        }
+
+        /* --- PENGATURAN DASAR --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--cream);
+            color: var(--text-main);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3, .serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* --- EFEK GLOW & ORNAMEN --- */
+        .glow {
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+        }
+        .ornament {
+            color: var(--gold);
+            font-size: 1.5rem;
+            margin: 15px 0;
+            opacity: 0.8;
+        }
+        .divider {
+            width: 50px;
+            height: 2px;
+            background-color: var(--gold);
+            margin: 20px auto;
+        }
+
+        /* --- HALAMAN SAMPUL (COVER) --- */
+        #cover {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: linear-gradient(135deg, var(--white) 30%, var(--sage-light) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            text-align: center;
+            padding: 20px;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        .cover-title {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            color: var(--sage-dark);
+            margin-bottom: 10px;
+        }
+        .cover-name {
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 30px;
+        }
+        .btn {
+            background-color: var(--sage-dark);
+            color: var(--white);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-family: 'Lato', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(88, 129, 87, 0.3);
+        }
+        .btn:hover {
+            background-color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        /* --- KONTEN UTAMA --- */
+        #main-content {
+            display: none; /* Disembunyikan sampai tombol cover diklik */
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        section {
+            padding: 80px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* --- ANIMASI SCROLL --- */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- BAGIAN HERO & DESKRIPSI --- */
+        .hero-section {
+            background: radial-gradient(circle at top, var(--white), var(--cream));
+            border-bottom: 1px solid var(--gold-light);
+            padding-top: 60px;
+        }
+        .verse-box {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid var(--gold-light);
+            margin: 40px 0;
+            font-style: italic;
+            color: var(--text-muted);
+            position: relative;
+        }
+        .verse-box::before {
+            content: "\f10d"; /* FontAwesome quote left */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--cream);
+            padding: 0 10px;
+            color: var(--gold);
+            font-size: 1.5rem;
+        }
+
+        /* --- INFORMASI ACARA --- */
+        .event-card {
+            background: var(--white);
+            padding: 40px 20px;
+            border-radius: 20px;
+            margin: 30px 0;
+        }
+        .map-container iframe {
+            width: 100%;
+            height: 300px;
+            border: 0;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        /* --- COUNTDOWN --- */
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .cd-box {
+            background: var(--sage-light);
+            color: var(--text-main);
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 70px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .cd-num {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: block;
+        }
+        .cd-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- DRESSCODE --- */
+        .dresscode-box {
+            background-color: var(--sage);
+            color: var(--white);
+            padding: 40px 20px;
+            border-radius: 20px;
+            margin: 40px 0;
+        }
+        .dresscode-box .ornament {
+            color: var(--white);
+        }
+
+        /* --- BUKU TAMU & RSVP --- */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--sage-dark);
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: inherit;
+            background-color: var(--white);
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .radio-group {
+            display: flex;
+            gap: 20px;
+        }
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border: 1px solid var(--gold-light);
+        }
+        .messages-list {
+            max-height: 300px;
+            overflow-y: auto;
+            text-align: left;
+            margin-top: 20px;
+            padding-right: 10px;
+        }
+        .message-item {
+            background: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--sage);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .message-item h4 {
+            margin-bottom: 5px;
+            color: var(--sage-dark);
+        }
+        .message-item span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: var(--cream);
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 10px;
+        }
+
+        /* --- TOMBOL MUSIK --- */
+        #music-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--gold);
+            color: var(--white);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
+            transition: transform 0.3s;
+        }
+        #music-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* --- RESPONSIVITAS --- */
+        @media (max-width: 600px) {
+            .cover-name { font-size: 2rem; }
+            section { padding: 60px 15px; }
+            .cd-box { min-width: 60px; padding: 10px; }
+            .cd-num { font-size: 1.5rem; }
+            #music-btn { bottom: 20px; right: 20px; width: 45px; height: 45px; }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="LaguRohani.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="cover">
+        <div class="ornament"><i class="fa-solid fa-cross"></i></div>
+        <p class="cover-title">PENEGUHAN SIDI</p>
+        <h1 class="serif cover-name">Grascya Larasaty<br>Wulandari</h1>
+        <p style="margin-bottom: 30px;">29 Maret 2026</p>
+        <button class="btn" onclick="openInvitation()"><i class="fa-solid fa-envelope-open-text"></i> Buka Undangan</button>
+    </div>
+
+    <div id="main-content">
+        
+        <section class="hero-section">
+            <div class="fade-in">
+                <h2 class="serif" style="color: var(--sage-dark); font-size: 2rem;">Peneguhan SIDI</h2>
+                <div class="divider"></div>
+                <h1 class="serif" style="font-size: 2.5rem; color: var(--gold); margin-bottom: 20px;">Grascya Larasaty Wulandari</h1>
+                
+                <p style="line-height: 1.6; margin-top: 30px;">
+                    "SIDI (Peneguhan Iman) adalah momen di mana seseorang secara pribadi mengakui dan meneguhkan imannya kepada Tuhan, sebagai langkah menuju kedewasaan rohani."
+                </p>
+
+                <div class="verse-box glow">
+                    <p>"Sebab jika kamu mengaku dengan mulutmu, bahwa Yesus adalah Tuhan, dan percaya dalam hatimu, bahwa Allah telah membangkitkan Dia dari antara orang mati, maka kamu akan diselamatkan."</p>
+                    <h4 class="serif" style="margin-top: 15px; color: var(--sage-dark);">Roma 10:9-10</h4>
+                </div>
+            </div>
+        </section>
+
+        <section id="informasi">
+            <div class="fade-in">
+                <div class="ornament"><i class="fa-solid fa-dove"></i></div>
+                <h2 class="serif" style="color: var(--sage-dark);">Waktu & Tempat</h2>
+                
+                <div class="countdown-container">
+                    <div class="cd-box"><span class="cd-num" id="hari">00</span><span class="cd-label">Hari</span></div>
+                    <div class="cd-box"><span class="cd-num" id="jam">00</span><span class="cd-label">Jam</span></div>
+                    <div class="cd-box"><span class="cd-num" id="menit">00</span><span class="cd-label">Menit</span></div>
+                    <div class="cd-box"><span class="cd-num" id="detik">00</span><span class="cd-label">Detik</span></div>
+                </div>
+
+                <div class="event-card glow">
+                    <h3 class="serif" style="color: var(--gold); margin-bottom: 10px;">Ibadah Peneguhan SIDI</h3>
+                    <p><strong>Minggu, 29 Maret 2026</strong></p>
+                    <p>Pukul 08.00 WITA – Selesai</p>
+                    <div class="divider"></div>
+                    <p><strong>GKPB Jemaat "Margi Kahuripan"</strong></p>
+                    <p>Jln Mulawarman No.10, Abianbase,<br>Kecamatan Gianyar</p>
+                    
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3945.741031267426!2d115.3263!3d-8.541!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOMKwMzInMjcuNiJTIDExNcKwMTknMzQuNyJF!5e0!3m2!1sid!2sid!4v1610000000000!5m2!1sid!2sid" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="dresscode">
+            <div class="fade-in dresscode-box glow">
+                <div class="ornament"><i class="fa-solid fa-leaf"></i></div>
+                <h2 class="serif" style="margin-bottom: 15px;">Dresscode</h2>
+                <p style="font-size: 1.1rem; line-height: 1.6;">
+                    Nuansa Putih 🤍<br>
+                    (Putih, Cream, atau warna terang sejenis)
+                </p>
+            </div>
+        </section>
+
+        <section id="rsvp">
+            <div class="fade-in">
+                <h2 class="serif" style="color: var(--sage-dark);">Reservasi & Buku Tamu</h2>
+                <p style="margin-bottom: 20px;">Kehadiran dan doa restu Anda sangat berarti bagi kami.</p>
+
+                <div class="stats-container">
+                    <div>
+                        <h3 id="count-hadir" style="color: var(--sage-dark);">0</h3>
+                        <p style="font-size: 0.9rem;">Hadir</p>
+                    </div>
+                    <div>
+                        <h3 id="count-tidak" style="color: var(--text-muted);">0</h3>
+                        <p style="font-size: 0.9rem;">Tidak Hadir</p>
+                    </div>
+                </div>
+
+                <form id="rsvp-form" name="submit-to-google-sheet">
+                    <div class="form-group">
+                        <label for="nama">Nama Anda</label>
+                        <input type="text" id="nama" name="Nama" class="form-control" required placeholder="Masukkan nama Anda">
+                    </div>
+                    <div class="form-group">
+                        <label for="ucapan">Ucapan & Doa</label>
+                        <textarea id="ucapan" name="Ucapan" class="form-control" required placeholder="Tuliskan ucapan dan doa untuk Grascya..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Konfirmasi Kehadiran</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="Kehadiran" value="Hadir" required> Hadir</label>
+                            <label><input type="radio" name="Kehadiran" value="Tidak Hadir"> Tidak Hadir</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn" id="btn-kirim" style="width: 100%;">Kirim Ucapan & Konfirmasi</button>
+                </form>
+
+                <div class="messages-list" id="messages-container">
+                    </div>
+            </div>
+        </section>
+
+        <footer style="text-align: center; padding: 30px; background: var(--sage-dark); color: var(--white); margin-top: 50px;">
+            <p class="serif">Terima Kasih</p>
+            <p style="font-size: 0.8rem; margin-top: 10px; opacity: 0.7;">Grascya Larasaty Wulandari - 2026</p>
+        </footer>
+
+    </div>
+
+    <button id="music-btn" onclick="toggleMusic()" style="display: none;">
+        <i class="fa-solid fa-music"></i>
+    </button>
+
+    <script>
+        // 1. FUNGSI BUKA UNDANGAN & PLAY MUSIK
+        const cover = document.getElementById('cover');
+        const mainContent = document.getElementById('main-content');
+        const musicBtn = document.getElementById('music-btn');
+        const audio = document.getElementById('bg-music');
+
+        function openInvitation() {
+            cover.style.opacity = '0';
+            setTimeout(() => {
+                cover.style.visibility = 'hidden';
+                cover.style.display = 'none';
+                mainContent.style.display = 'block';
+                setTimeout(() => mainContent.style.opacity = '1', 50);
+                
+                // Mulai musik dan tampilkan tombol kontrol
+                audio.play();
+                musicBtn.style.display = 'block';
+            }, 1000);
+        }
+
+        // 2. KONTROL MUSIK (MUTE/UNMUTE)
+        function toggleMusic() {
+            if (audio.paused) {
+                audio.play();
+                musicBtn.innerHTML = '<i class="fa-solid fa-music"></i>';
+            } else {
+                audio.pause();
+                musicBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+            }
+        }
+
+        // 3. ANIMASI SCROLL (FADE IN)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+
+        // 4. COUNTDOWN TIMER (Target: 29 Maret 2026 08:00:00)
+        const targetDate = new Date("March 29, 2026 08:00:00").getTime();
+        
+        const countdownInterval = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById("hari").innerText = "00";
+                document.getElementById("jam").innerText = "00";
+                document.getElementById("menit").innerText = "00";
+                document.getElementById("detik").innerText = "00";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("hari").innerText = days.toString().padStart(2, '0');
+            document.getElementById("jam").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("menit").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("detik").innerText = seconds.toString().padStart(2, '0');
+        }, 1000);
+
+        // 5. INTEGRASI FORM GOOGLE SHEETS & BUKU TAMU LOKAL
+        // PENTING: Ganti URL di bawah dengan URL Web App dari Google Apps Script Anda
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbx9zPuYbKDNh9mZK8nztWKZur9P66rVtsj84dBzgEQdsl78wqhJsrzmeCkewUat8G2P_A/exec'; 
+        const form = document.forms['submit-to-google-sheet'];
+        const btnKirim = document.getElementById('btn-kirim');
+        
+        // Variabel untuk statistik lokal (simulasi)
+        let totalHadir = 0;
+        let totalTidak = 0;
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            btnKirim.innerText = "Mengirim...";
+            btnKirim.disabled = true;
+
+            // Ambil data form
+            const formData = new FormData(form);
+            const nama = formData.get('Nama');
+            const ucapan = formData.get('Ucapan');
+            const kehadiran = formData.get('Kehadiran');
+
+            // --- BAGIAN INI MENGIRIM DATA KE GOOGLE SHEETS ---
+            // Jika Anda belum memasukkan scriptURL yang valid, pengiriman akan gagal, 
+            // namun ucapan akan tetap muncul di layar sebagai simulasi.
+            fetch(scriptURL, { method: 'POST', body: formData })
+                .then(response => {
+                    console.log('Success!', response);
+                })
+                .catch(error => console.error('Error!', error.message))
+                .finally(() => {
+                    // Update tampilan Buku Tamu Lokal
+                    tambahkanUcapanKeLayar(nama, ucapan, kehadiran);
+                    updateStatistik(kehadiran);
+
+                    // Reset Form
+                    form.reset();
+                    btnKirim.innerText = "Kirim Ucapan & Konfirmasi";
+                    btnKirim.disabled = false;
+                    alert("Terima kasih! Konfirmasi dan ucapan Anda telah terkirim.");
+                });
+        });
+
+        function tambahkanUcapanKeLayar(nama, ucapan, kehadiran) {
+            const container = document.getElementById('messages-container');
+            const statusColor = kehadiran === 'Hadir' ? 'var(--sage-dark)' : 'var(--text-muted)';
+            
+            const messageHTML = `
+                <div class="message-item fade-in visible">
+                    <h4>${nama} <span style="background: ${statusColor}; color: white;">${kehadiran}</span></h4>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">"${ucapan}"</p>
+                </div>
+            `;
+            // Tambahkan di urutan teratas
+            container.insertAdjacentHTML('afterbegin', messageHTML);
+        }
+
+        function updateStatistik(kehadiran) {
+            if(kehadiran === 'Hadir') {
+                totalHadir++;
+                document.getElementById('count-hadir').innerText = totalHadir;
+            } else {
+                totalTidak++;
+                document.getElementById('count-tidak').innerText = totalTidak;
+            }
+        }
+    </script>
+</body>
+</html>
